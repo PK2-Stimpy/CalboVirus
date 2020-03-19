@@ -12,4 +12,5 @@ Discord: fernandoGamer12YT#1010
 
 # Contribute
 Paypal: https://www.paypal.me/TNN1
+
 Bitcoin: 1FK3Dv7B75csEZRvx86a3FQUPDU7auraLz
