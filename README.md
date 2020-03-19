@@ -6,3 +6,10 @@ This is a prank virus(I guess). It puts macarena song and an image as wallpaper,
 # Stuff to add
 1. Make the program copy itself to C:\Windows\System32\, run the program and then, delete it from it's actual location.
 2. Idk.
+
+# Contact
+Discord: fernandoGamer12YT#1010
+
+# Contribute
+Paypal: https://www.paypal.me/TNN1
+Bitcoin: 1FK3Dv7B75csEZRvx86a3FQUPDU7auraLz
