@@ -13,7 +13,7 @@ This is a prank virus(I guess). It puts USSR song and an image as wallpaper, it 
 3. Tell me more things on my discord.
 
 # Contact
-Discord: PK2_Stimpy#0001
+Discord: PK2_Stimpy#7089
 
 # Contribute
 Paypal: https://www.paypal.me/TNN1
